@@ -7,7 +7,11 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
-    # 👇 删掉所有 working-directory 配置！直接在根目录执行！
+    # 👇 关键：告诉 GitHub Actions 去子文件夹里执行命令
+    defaults:
+      run:
+        working-directory: vue-xiuxiangame-main
+
     steps:
       - name: 拉取代码
         uses: actions/checkout@v4
@@ -41,11 +45,11 @@ jobs:
           xcodebuild -exportArchive \
             -archivePath build/App.xcarchive \
             -exportPath build/IPA \
-            -exportOptionsPlist .github/workflows/ExportOptions.plist \
+            -exportOptionsPlist ${{ github.workspace }}/ExportOptions.plist \
             CODE_SIGNING_ALLOWED=NO
 
       - name: 上传 IPA
         uses: actions/upload-artifact@v4
         with:
           name: iOS-IPA
-          path: ios/App/build/IPA/
+          path: vue-xiuxiangame-main/ios/App/build/IPA/
