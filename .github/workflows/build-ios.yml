@@ -7,35 +7,29 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
-    # 👇 核心：所有命令都在这个子文件夹里执行
+    # 👇 修正为真实文件夹名：vue-xiuxiangame-main
     defaults:
       run:
-        working-directory: vue-xiuxian-game-main
+        working-directory: vue-xiuxiangame-main
 
     steps:
-      # 1. 拉取代码
       - name: 拉取代码
         uses: actions/checkout@v4
 
-      # 2. 安装 Node.js 环境
       - name: 安装 Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3. 安装依赖（现在会在子文件夹里找 package.json）
       - name: 安装依赖
         run: npm install --legacy-peer-deps
 
-      # 4. 构建前端项目
       - name: 构建前端
         run: npm run build
 
-      # 5. 同步 Capacitor iOS 代码
       - name: 同步 Capacitor iOS
         run: npx cap sync ios
 
-      # 6. 编译 iOS 归档（路径适配子文件夹）
       - name: 编译 iOS 归档
         run: |
           cd ios/App
@@ -45,7 +39,6 @@ jobs:
             -archivePath build/App.xcarchive \
             clean archive CODE_SIGNING_ALLOWED=NO
 
-      # 7. 导出 IPA 安装包
       - name: 导出 IPA
         run: |
           cd ios/App
@@ -55,9 +48,8 @@ jobs:
             -exportOptionsPlist ${{ github.workspace }}/ExportOptions.plist \
             CODE_SIGNING_ALLOWED=NO
 
-      # 8. 上传 IPA 到 GitHub（路径必须包含子文件夹）
       - name: 上传 IPA
         uses: actions/upload-artifact@v4
         with:
           name: iOS-IPA
-          path: vue-xiuxian-game-main/ios/App/build/IPA/
+          path: vue-xiuxiangame-main/ios/App/build/IPA/
