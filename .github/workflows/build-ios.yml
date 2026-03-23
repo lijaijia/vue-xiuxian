@@ -7,6 +7,7 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
+    # 👇 删掉所有 working-directory 配置！直接在根目录执行！
     steps:
       - name: 拉取代码
         uses: actions/checkout@v4
@@ -40,7 +41,7 @@ jobs:
           xcodebuild -exportArchive \
             -archivePath build/App.xcarchive \
             -exportPath build/IPA \
-            -exportOptionsPlist ${{ github.workspace }}/ExportOptions.plist \
+            -exportOptionsPlist .github/workflows/ExportOptions.plist \
             CODE_SIGNING_ALLOWED=NO
 
       - name: 上传 IPA
